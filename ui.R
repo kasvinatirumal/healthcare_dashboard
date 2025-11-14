@@ -1,6 +1,7 @@
 # UI
 
 # R package for interactive maps
+library(shiny)
 library(shinydashboard)
 library(leaflet)
 
@@ -17,10 +18,10 @@ sidebar <- dashboardSidebar(
              tabName = "mortality", 
              icon = icon("globe")),
     
-    # Tab 2: Additional tab
-    menuItem("Tab 2", 
-             tabName = "tab2", 
-             icon = icon("chart-line")),
+    # Tab 2: Heart Disease Indicators
+    menuItem("Heart Disease Indicators", 
+             tabName = "heart", 
+             icon = icon("heart", class = "fas")),
     
     # Tab 3: Additional tab
     menuItem("Tab 3", 
@@ -55,6 +56,41 @@ sidebar <- dashboardSidebar(
                 selected = "All Cancers"),
     
     uiOutput("yearSelectorUI")
+  ),
+  
+  # Filters for tab 2
+  conditionalPanel(
+    condition = "input.sidebarItemSelected == 'heart'",
+    
+    checkboxGroupInput(
+      inputId = "race",
+      label = "Race",
+      choices = c("Asian", "Hispanic", "Black", "White", "Native American", "Other"),
+      selected = c("Asian", "Hispanic", "Black", "White", "Native American", "Other")
+    ),
+    
+    checkboxGroupInput(
+      inputId = "sex",
+      label = "Sex",
+      choices = c("Male", "Female"),
+      selected = c("Male", "Female")
+    ),
+    
+    checkboxGroupInput(
+      inputId = "drinking_smoking",
+      label = "Drinking/Smoking Status",
+      choices = c("Neither", "Drinker Only", "Smoker Only", "Both"),
+      selected = c("Neither", "Drinker Only", "Smoker Only", "Both")
+    ),
+    
+    sliderInput(inputId = "bmi",
+                label = "BMI",
+                min = 10,
+                max = 50,
+                value = c(10, 50),
+                sep = "",
+                step = 5
+    )
   )
 )
 
@@ -130,9 +166,33 @@ body <- dashboardBody(
             )
     ),
     
-    # Tab 2
-    tabItem(tabName = "tab2",
-            h3("Project 2")
+    # ---- Tab 2: Heart Disease Indicators ----
+    tabItem(tabName = "heart",
+            div(
+              h4("I am evaluating how demographic factors as well as lifestyle choices correlate with heart disease risk."),
+              style = "text-align: center; margin-bottom: 20px;"
+            ),
+            
+            fluidRow(
+              # Plot 1 (First row, First col)
+              column(width = 6,
+                     box(width = 12,
+                         plotOutput("heart_race_sex_plot", height = "300px"))
+              ),
+              # Plot 2 (Second row, Second col)
+              column(width = 6,
+                     box(width = 12,
+                         plotOutput("heart_smoking_drinking_plot", height = "300px"))
+              )
+            ),
+            
+            fluidRow(
+              # Plot 3 (Second row, First col)
+              column(width = 12,
+                     box(width = 12,
+                       plotOutput("heart_bmi_plot", height = "300px"))
+              ),
+            ),
     ),
     
     # Tab 3

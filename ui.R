@@ -12,8 +12,8 @@ sidebar <- dashboardSidebar(
   sidebarMenu(
     id = "sidebarItemSelected",
     
-    # Tab 1: Global Cancer Mortality
-    menuItem("Global Cancer Mortality", 
+    # Tab 1: Global Cancer Mortality Trends
+    menuItem("Global Cancer Mortality Trends", 
              tabName = "mortality", 
              icon = icon("globe")),
     
@@ -47,12 +47,14 @@ sidebar <- dashboardSidebar(
     ),
     
     selectInput("region", "Select Region",   
-                choices = c("World", "North America", "South America", "Asia", "Europe", "Oceania", "Africa"),
+                choices = c("World", "North America", "South America", "Asia", 
+                            "Europe", "Oceania", "Africa"),
                 selected = "World"),
     
     selectInput("cancer", "Select Cancer Type",   
-                choices = c("All Cancers", "Breast", "Lung", "Prostate", "Colon", "Pancreas"),
-                selected = "All Cancers"),
+                choices = c("All", "Breast", "Lung", "Prostate", "Colon", "
+                            Pancreas"),
+                selected = "All"),
     
     uiOutput("yearSelectorUI")
   ),
@@ -101,34 +103,31 @@ body <- dashboardBody(
     tabItem(tabName = "mortality",
             fluidRow(
               # Info Box 1
-              infoBoxOutput(width = 3,
-                            "infoYears" 
-              ),
+              infoBoxOutput(width = 3, "infoYears"),
+              
               # Info Box 2
-              infoBoxOutput(width = 3,
-                            "infoDRFirst"
-              ),
+              infoBoxOutput(width = 3, "infoDRFirst"),
+              
               # Info Box 3
-              infoBoxOutput(width = 3,
-                            "infoDRLast"
-              ),
+              infoBoxOutput(width = 3, "infoDRLast"),
+              
               # Info Box 4
-              infoBoxOutput(width = 3,
-                            "change"
-              )
+              infoBoxOutput(width = 3, "change")
             ),
             
             
             fluidRow(
               # Plot 1 (First row, First col)
               column(width = 6,
-                     box(title = "Regional Trends in Cancer Mortality Rate", width = 12,
-                         plotOutput("regionPlot", height = "300px"))
+                     box(title = tags$div(textOutput("title1"),
+                                          style = "font-size:14.5px;"), width = 12,
+                         plotOutput("cancerTypePlot", height = "300px"))
               ),
               # Plot 2 (Second row, Second col)
               column(width = 6,
-                     box(title = "Average Cancer Mortality Rate by Cancer Type", width = 12,
-                         plotOutput("cancerTypePlot", height = "300px"))
+                     box(title = tags$div(textOutput("title2"),
+                                          style = "font-size:14.5px;"), width = 12,
+                         plotOutput("regionPlot", height = "300px"))
               )
             ),
             
@@ -136,21 +135,15 @@ body <- dashboardBody(
               # Plot 3 (Second row, First col)
               column(width = 6,
                      box(
-                       title = tags$div(
-                            "Average Mortality Rate per Age Group by Region, Cancer Type and Year",
-                           style = "font-size:15px;"
-                         ), 
-                       width = 12,
+                       title = tags$div(textOutput("title3"),
+                                        style = "font-size:14px;"), width = 12,
                        plotOutput("ageHistPlot", height = "300px"))
               ),
               # Plot 4 (Second row, Second col)
               column(width = 6,
                      box(
-                       title = tags$div(
-                         "Countries with Largest Change in Mortality Rates by Cancer Type",
-                         style = "font-size:15px;"
-                       ),
-                       width = 12,
+                       title = tags$div(textOutput("title4"),
+                                        style = "font-size:14px;"), width = 12,
                        plotOutput("divergingPlot", height = "300px")
                      )
               )
@@ -159,7 +152,7 @@ body <- dashboardBody(
             fluidRow(
               # Plot 5 (Spans entire third row)
               column(width = 12,
-                     box(title = "Worldwide Change in Mortality Rates by Cancer Type", width = 12,
+                     box(title = textOutput("title5"), width = 12,
                          leafletOutput("mapPlot", height = "425px"))
               )
             )

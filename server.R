@@ -10,11 +10,10 @@ load("cancer_all_df.RData")
 source("heart_preprocess_data.R")
 
 server <- function(input, output) {
-  # race/sex plot
+  # race/sex plot comapred with heart disease for each
   output$heart_race_sex_plot <- renderPlot({
     df <- heart_temp %>%
-      filter(
-        Race %in% input$race,
+      filter(Race %in% input$race,
         Sex %in% input$sex,
       )
     
@@ -44,14 +43,14 @@ server <- function(input, output) {
       theme_minimal(base_size = 12) +
       theme(
         axis.text.x = element_text(angle = 45, hjust = 1, margin = margin(b=20)),
-        plot.title = element_text(face = "bold", hjust = 0.5, margin = margin(b = 20), size=15),
+        plot.title = element_text(face = "bold", hjust = 0.52, margin = margin(b = 20), size=15),
         plot.subtitle = element_text(hjust = 0.5, margin = margin(b = 20), size = 10),
         axis.title = element_text(face = "bold", size = 15)
       ) +
       scale_fill_manual(values = c("Male" = "blue", "Female" = "red"))
   })
   
-  # smoking/drinking plot
+  # smoking/drinking plot compared with heart disease for each
   output$heart_smoking_drinking_plot <- renderPlot({
     df <- heart_temp %>%
       filter(
@@ -61,7 +60,6 @@ server <- function(input, output) {
     heart_behav <- df %>%
       group_by(BehaviorGroup) %>%
       summarize(HeartDiseaseRate = mean(HeartDisease == "Yes") * 100) %>%
-      arrange(HeartDiseaseRate) %>%  
       mutate(BehaviorGroup = factor(BehaviorGroup, levels = BehaviorGroup))
     
     ggplot(heart_behav, aes(x = BehaviorGroup, y = HeartDiseaseRate, fill = BehaviorGroup)) +
@@ -88,7 +86,7 @@ server <- function(input, output) {
       ))
   })
   
-  # bmi plot
+  # bmi plot vs heart disease
   output$heart_bmi_plot <- renderPlot({
     
     df <- heart_temp %>%
@@ -128,9 +126,9 @@ server <- function(input, output) {
       ) +
       theme_minimal(base_size = 12) +
       theme(
-        axis.text.x = element_text(angle = 45, hjust = 1, margin = margin(b = 30)),
+        axis.text.x = element_text(angle = 45, hjust = 1),
         plot.title = element_text(face = "bold", hjust = 0.5, margin = margin(b = 20), size = 15),
-        plot.subtitle = element_text(hjust = 0.5, margin = margin(b = 20), size = 10),
+        plot.subtitle = element_text(hjust = 0.5, margin = margin(b = 20), size = 11),
         axis.title = element_text(face = "bold", size = 15)
       ) +
       scale_fill_brewer(palette = "Oranges")

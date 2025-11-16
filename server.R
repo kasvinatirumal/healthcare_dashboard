@@ -729,7 +729,7 @@ server <- function(input, output) {
       shape = State
     )) +
       geom_line(linewidth = 1.2) +
-      geom_point(size = 2.2, fill = "white", show.legend = FALSE) +
+      geom_point(size = 2.2, fill = "white") +
       scale_linetype_manual(values = setNames(
         c("solid", "twodash"),
         c(input$obesity_state1, input$obesity_state2)

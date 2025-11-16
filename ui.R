@@ -97,35 +97,6 @@ sidebar <- dashboardSidebar(
   ),
   
   # ---- Tab 3: Obesity Risk Factors (state selectors) ----
-  # conditionalPanel(
-  #   condition = "input.sidebarItemSelected == 'obesity'",
-  #   
-  #   selectInput(
-  #     inputId = "obesity_state1",
-  #     label = "Select State 1",
-  #     choices = state_choices,
-  #     selected = "Washington"
-  #   ),
-  #   
-  #   selectInput(
-  #     inputId = "obesity_state2",
-  #     label = "Select State 2",
-  #     choices = state_choices,
-  #     selected = "California"
-  #   ),
-  #   
-  #   sliderInput(
-  #     inputId = "obesity_years",
-  #     label   = "Years included",
-  #     min     = 2011,
-  #     max     = 2023,
-  #     value   = c(2011, 2023),
-  #     step    = 1,
-  #     sep     = ""
-  #   )
-  # )
-  
-  # ---- Tab 3: Obesity Risk Factors (state selectors) ----
   conditionalPanel(
     condition = "input.sidebarItemSelected == 'obesity'",
     
@@ -269,7 +240,7 @@ body <- dashboardBody(
     # ---- Tab 3: Obesity Risk Factors ----
     tabItem(tabName = "obesity",
             div(
-              h4("Exploring obesity rates and behavioral risk factors across U.S. states"),
+              h4("Tracking Obesity and Health Behaviors in the United States"),
               style = "text-align: center; margin-bottom: 20px;"
             ),
             

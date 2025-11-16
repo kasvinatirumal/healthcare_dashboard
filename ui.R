@@ -4,6 +4,9 @@
 library(shinydashboard)
 library(leaflet)
 
+# this is for tab 3
+state_choices <- sort(c(state.name, "District of Columbia"))
+
 # Dashboard header
 header <- dashboardHeader(title = "Healthcare Dashboard")
 
@@ -23,8 +26,8 @@ sidebar <- dashboardSidebar(
              icon = icon("heart", class = "fas")),
     
     # Tab 3: Additional tab
-    menuItem("Tab 3", 
-             tabName = "tab3", 
+    menuItem("Obesity Risk Factors", 
+             tabName = "obesity", 
              icon = icon("flask")),
     
     # Tab 4: Additional tab
@@ -52,8 +55,7 @@ sidebar <- dashboardSidebar(
                 selected = "World"),
     
     selectInput("cancer", "Select Cancer Type",   
-                choices = c("All", "Breast", "Lung", "Prostate", "Colon", "
-                            Pancreas"),
+                choices = c("All", "Breast", "Lung", "Prostate", "Colon", "Pancreas"),
                 selected = "All"),
     
     uiOutput("yearSelectorUI")
@@ -91,6 +93,83 @@ sidebar <- dashboardSidebar(
                 value = c(10, 50),
                 sep = "",
                 step = 5
+    )
+  ),
+  
+  # ---- Tab 3: Obesity Risk Factors (state selectors) ----
+  # conditionalPanel(
+  #   condition = "input.sidebarItemSelected == 'obesity'",
+  #   
+  #   selectInput(
+  #     inputId = "obesity_state1",
+  #     label = "Select State 1",
+  #     choices = state_choices,
+  #     selected = "Washington"
+  #   ),
+  #   
+  #   selectInput(
+  #     inputId = "obesity_state2",
+  #     label = "Select State 2",
+  #     choices = state_choices,
+  #     selected = "California"
+  #   ),
+  #   
+  #   sliderInput(
+  #     inputId = "obesity_years",
+  #     label   = "Years included",
+  #     min     = 2011,
+  #     max     = 2023,
+  #     value   = c(2011, 2023),
+  #     step    = 1,
+  #     sep     = ""
+  #   )
+  # )
+  
+  # ---- Tab 3: Obesity Risk Factors (state selectors) ----
+  conditionalPanel(
+    condition = "input.sidebarItemSelected == 'obesity'",
+    
+    selectInput(
+      inputId = "obesity_state1",
+      label = "Select State 1",
+      choices = state_choices,
+      selected = "Washington"
+    ),
+    
+    selectInput(
+      inputId = "obesity_state2",
+      label = "Select State 2",
+      choices = state_choices,
+      selected = "California"
+    ),
+    
+    sliderInput(
+      inputId = "obesity_years",
+      label   = "Years included",
+      min     = 2011,
+      max     = 2023,
+      value   = c(2011, 2023),
+      step    = 1,
+      sep     = ""
+    ),
+    
+    checkboxGroupInput(
+      inputId = "obesity_behaviors",
+      label   = "Behavioral measures to display",
+      choices = c(
+        "150+ min Activity",
+        "Activity + Strengthening",
+        ">300 min Activity",
+        "Strengthening 2+ Days",
+        "No Physical Activity"
+      ),
+      selected = c(
+        "150+ min Activity",
+        "Activity + Strengthening",
+        ">300 min Activity",
+        "Strengthening 2+ Days",
+        "No Physical Activity"
+      )
     )
   )
 )
@@ -187,9 +266,51 @@ body <- dashboardBody(
             ),
     ),
     
-    # Tab 3
-    tabItem(tabName = "tab3",
-            h3("Project 3")
+    # ---- Tab 3: Obesity Risk Factors ----
+    tabItem(tabName = "obesity",
+            div(
+              h4("Exploring obesity rates and behavioral risk factors across U.S. states"),
+              style = "text-align: center; margin-bottom: 20px;"
+            ),
+            
+            # Info boxes showing state comparison summary
+            fluidRow(
+              infoBoxOutput(width = 4, "obesity_info_state1"),
+              infoBoxOutput(width = 4, "obesity_info_state2"),
+              infoBoxOutput(width = 4, "obesity_info_diff")
+            ),
+            
+            # First row: US Map
+            fluidRow(
+              column(width = 12,
+                     box(title = "Adult Obesity Rates by U.S. State", 
+                         width = 12,
+                         leafletOutput("obesity_map", height = "400px"))
+              )
+            ),
+            
+            # Second row: State comparison plots
+            fluidRow(
+              column(width = 6,
+                     box(title = textOutput("obesity_state1_title"), 
+                         width = 12,
+                         plotOutput("obesity_state1_plot", height = "350px"))
+              ),
+              column(width = 6,
+                     box(title = textOutput("obesity_state2_title"), 
+                         width = 12,
+                         plotOutput("obesity_state2_plot", height = "350px"))
+              )
+            ),
+            
+            # Third row: Obesity and overweight trends comparison
+            fluidRow(
+              column(width = 12,
+                     box(title = "Obesity and Overweight Trends Comparison", 
+                         width = 12,
+                         plotOutput("obesity_weight_comparison", height = "350px"))
+              )
+            )
     ),
     
     # Tab 4

@@ -5,6 +5,8 @@ library(dplyr)
 library(RColorBrewer)
 library(ggrepel)
 library(leaflet)
+library(sf)
+library(tigris)
 
 # Load the cancer data
 load("cancer_all_df.RData")
@@ -12,7 +14,76 @@ load("cancer_all_df.RData")
 # heart disease data preprocessing
 source("heart_preprocess_data.R")
 
-function(input, output) {
+# -------- processing obesity data to make it cleaner --------
+# loading obesity data and change column name
+obesity_df <- read.csv("NationalObesity.csv") %>%
+  rename(State = NAME, ObesityRate = Obesity)
+
+obesity_risk_raw <- read.csv("BehavioralRiskForObesity.csv")
+obesity_risk <- obesity_risk_raw[
+  obesity_risk_raw$StratificationCategory1 == "Total" &
+    obesity_risk_raw$Stratification1 == "Total",
+]
+
+# renaming for shorter labels 
+obesity_risk <- obesity_risk %>%
+  mutate(
+    ShortQuestion = dplyr::case_when(
+      Question == "Percent of adults aged 18 years and older who have obesity" ~ "Adults with Obesity",
+      Question == "Percent of adults aged 18 years and older who have an overweight classification" ~ "Adults Overweight",
+      Question == "Percent of adults who achieve at least 150 minutes a week of moderate-intensity aerobic physical activity or 75 minutes a week of vigorous-intensity aerobic activity (or an equivalent combination)" ~ "150+ min Activity",
+      Question == "Percent of adults who achieve at least 150 minutes a week of moderate-intensity aerobic physical activity or 75 minutes a week of vigorous-intensity aerobic physical activity (or an equivalent combination) and engage in muscle-strengthening activities on 2 or more days a week" ~ "Activity + Strengthening",
+      Question == "Percent of adults who achieve more than 300 minutes a week of moderate-intensity aerobic physical activity or 150 minutes a week of vigorous-intensity aerobic activity (or an equivalent combination)" ~ ">300 min Activity",
+      Question == "Percent of adults who engage in muscle-strengthening activities on 2 or more days a week" ~ "Strengthening 2+ Days",
+      Question == "Percent of adults who engage in no leisure-time physical activity" ~ "No Physical Activity",
+      Question == "Percent of adults who report consuming fruit less than one time daily" ~ "Low Fruit Intake",
+      Question == "Percent of adults who report consuming vegetables less than one time daily" ~ "Low Vegetable Intake",
+      TRUE ~ Question
+    )
+  )
+
+options(tigris_use_cache = TRUE, tigris_class = "sf")
+states_sf <- tigris::states(cb = TRUE, year = 2023)
+
+# dropping territories
+states_sf <- states_sf[!(states_sf$STATEFP %in% c("60", "66", "69", "78")), ]
+states_sf <- states_sf[, c("STATEFP", "NAME", "geometry")]
+states_sf <- sf::st_transform(states_sf, 4326)
+
+# join obesity rates
+obesity_map_sf <- merge(
+  x   = states_sf,
+  y   = obesity_df,
+  by.x = "NAME",
+  by.y = "State",
+  all.x = TRUE,
+  sort = FALSE
+)
+
+# Getting a single obesity percentage per state
+state_obesity_rate <- function(state_name) {
+  obesity_df %>%
+    filter(State == state_name) %>%
+    summarise(rate = mean(ObesityRate, na.rm = TRUE)) %>%
+    pull(rate)
+}
+
+# Getting behavior data per state, dropping some vals that are not accurate
+get_state_behavior_data <- function(state_name) {
+  obesity_risk %>%
+    filter(
+      LocationDesc == state_name,
+      !ShortQuestion %in% c("Low Fruit Intake", "Low Vegetable Intake")
+    ) %>%
+    group_by(YearStart, ShortQuestion) %>%
+    summarise(
+      mean_value = mean(Data_Value, na.rm = TRUE),
+      .groups = "drop"
+    )
+}
+
+# ------------------------------------------------------------------- #
+server <- function(input, output) {
   # ---- Tab 1: Global Cancer Mortality ----
   theData = reactive({
     cancer_all_df %>%
@@ -522,5 +593,225 @@ function(input, output) {
         axis.title = element_text(face = "bold", size = 15)
       ) +
       scale_fill_brewer(palette = "Oranges")
+  })
+  
+  # ---- Tab 3: Obesity Risk Factors ----
+  
+  # obesity summary state 1
+  output$obesity_info_state1 <- renderInfoBox({
+    req(input$obesity_state1)
+    rate1 <- state_obesity_rate(input$obesity_state1)
+    infoBox(
+      title = input$obesity_state1,
+      value = ifelse(is.na(rate1), "No data",
+                     paste0(round(rate1, 1), "% obese")),
+      subtitle = "Adult obesity prevalence",
+      icon = icon("user"),
+      color = "navy"
+    )
+  })
+  
+  # obesity summary state 2
+  output$obesity_info_state2 <- renderInfoBox({
+    req(input$obesity_state2)
+    rate2 <- state_obesity_rate(input$obesity_state2)
+    infoBox(
+      title = input$obesity_state2,
+      value = ifelse(is.na(rate2), "No data",
+                     paste0(round(rate2, 1), "% obese")),
+      subtitle = "Adult obesity prevalence",
+      icon = icon("user"),
+      color = "teal"
+    )
+  })
+  
+  # obesity summary percentage point difference
+  output$obesity_info_diff <- renderInfoBox({
+    req(input$obesity_state1, input$obesity_state2)
+    rate1 <- state_obesity_rate(input$obesity_state1)
+    rate2 <- state_obesity_rate(input$obesity_state2)
+    diff_val <- rate2 - rate1
+    
+    infoBox(
+      title = "Difference (State 2 - State 1)",
+      value = ifelse(any(is.na(c(rate1, rate2))), "No data",
+                     paste0(ifelse(diff_val >= 0, "+", ""), round(diff_val, 1), " pp")),
+      subtitle = "Percentage point difference in obesity rate",
+      icon = icon(ifelse(diff_val >= 0, "arrow-up", "arrow-down")),
+      color = ifelse(diff_val > 0, "red", "green")
+    )
+  })
+  
+  # U.S. obesity map
+  output$obesity_map <- renderLeaflet({
+    map_data <- obesity_map_sf %>%
+      filter(NAME != "Puerto Rico")
+    
+    pal <- colorNumeric(
+      palette = "Blues",
+      domain = map_data$ObesityRate,
+      na.color = "grey90"
+    )
+    
+    leaflet(map_data) %>%
+      addProviderTiles("CartoDB.Positron") %>%
+      addPolygons(
+        fillColor = ~pal(ObesityRate),
+        weight = 0.5,
+        color = "white",
+        fillOpacity = 0.8,
+        smoothFactor = 0.2,
+        highlightOptions = highlightOptions(
+          weight = 2,
+          color = "#666",
+          fillOpacity = 0.9,
+          bringToFront = TRUE
+        ),
+        label = ~paste0(NAME, ": ", round(ObesityRate, 1), "%"),
+        popup = ~paste0(
+          "<strong>", NAME, "</strong><br>",
+          "Adult Obesity: ", round(ObesityRate, 1), "%"
+        )
+      ) %>%
+      addLegend(
+        "bottomright",
+        pal = pal,
+        values = ~ObesityRate,
+        title = "Adult Obesity (%)",
+        opacity = 0.8
+      ) %>%
+      setView(
+        lng = -120,
+        lat = 42,
+        zoom = 3.4
+      )
+  })
+  
+  state1_behavior <- reactive({
+    req(input$obesity_state1)
+    df <- get_state_behavior_data(input$obesity_state1)
+    
+    if (!is.null(input$obesity_years)) {
+      df <- df[df$YearStart >= input$obesity_years[1] &
+                 df$YearStart <= input$obesity_years[2], ]
+    }
+    df
+  })
+  
+  state2_behavior <- reactive({
+    req(input$obesity_state2)
+    df <- get_state_behavior_data(input$obesity_state2)
+    
+    if (!is.null(input$obesity_years)) {
+      df <- df[df$YearStart >= input$obesity_years[1] &
+                 df$YearStart <= input$obesity_years[2], ]
+    }
+    df
+  })
+  
+  # titles for state plots
+  output$obesity_state1_title <- renderText({
+    paste0("Behavioral Trends in ", input$obesity_state1)
+  })
+  
+  output$obesity_state2_title <- renderText({
+    paste0("Behavioral Trends in ", input$obesity_state2)
+  })
+  
+  # behavioral trends plot for State 1
+  output$obesity_state1_plot <- renderPlot({
+    df <- state1_behavior()
+    
+    df <- df[!(df$ShortQuestion %in% c("Adults with Obesity", "Adults Overweight")), ]
+    
+    validate(
+      need(length(input$obesity_behaviors) > 0,
+           "Please select at least one behavior to display.")
+    )
+    
+    df <- df[df$ShortQuestion %in% input$obesity_behaviors, ]
+    
+    validate(need(nrow(df) > 0, "No data available for this combination."))
+    
+    ggplot(df, aes(x = YearStart, y = mean_value, color = ShortQuestion)) +
+      geom_line(linewidth = 1.2) +
+      geom_point(size = 1.3) +
+      labs(
+        x = "Year",
+        y = "Percent of Adults",
+        color = "Behavior"
+      ) +
+      expand_limits(y = 0) +
+      theme_minimal(base_size = 13) +
+      theme(legend.position = "right")
+  })
+  
+  # behavior trends plot for State 2
+  output$obesity_state2_plot <- renderPlot({
+    df <- state2_behavior()
+    
+    df <- df[!(df$ShortQuestion %in% c("Adults with Obesity", "Adults Overweight")), ]
+    
+    validate(
+      need(length(input$obesity_behaviors) > 0,
+           "Please select at least one behavior to display.")
+    )
+    
+    df <- df[df$ShortQuestion %in% input$obesity_behaviors, ]
+    
+    validate(need(nrow(df) > 0, "No data available for this combination."))
+    
+    ggplot(df, aes(x = YearStart, y = mean_value, color = ShortQuestion)) +
+      geom_line(linewidth = 1.2) +
+      geom_point(size = 1.3) +
+      labs(
+        x = "Year",
+        y = "Percent of Adults",
+        color = "Behavior"
+      ) +
+      expand_limits(y = 0) +
+      theme_minimal(base_size = 13) +
+      theme(legend.position = "right")
+  })
+  
+  # obesity and overweight trends comparison (for both states)
+  output$obesity_weight_comparison <- renderPlot({
+    df1 <- state1_behavior() %>%
+      filter(ShortQuestion %in% c("Adults with Obesity", "Adults Overweight")) %>%
+      mutate(State = input$obesity_state1)
+    
+    df2 <- state2_behavior() %>%
+      filter(ShortQuestion %in% c("Adults with Obesity", "Adults Overweight")) %>%
+      mutate(State = input$obesity_state2)
+    
+    df_all <- bind_rows(df1, df2)
+    validate(need(nrow(df_all) > 0, "No obesity/overweight data available for selected states."))
+    
+    ggplot(df_all, aes(
+      x = YearStart,
+      y = mean_value,
+      color = ShortQuestion,
+      linetype = State,
+      shape = State
+    )) +
+      geom_line(linewidth = 1.2) +
+      geom_point(size = 2.2, fill = "white") +
+      scale_linetype_manual(values = setNames(
+        c("solid", "twodash"),
+        c(input$obesity_state1, input$obesity_state2)
+      )) +
+      scale_shape_manual(values = setNames(
+        c(16, 23),
+        c(input$obesity_state1, input$obesity_state2)
+      )) +
+      labs(
+        x = "Year",
+        y = "Percent of Adults",
+        color = "Measure",
+        linetype = "State",
+        shape = "State"
+      ) +
+      expand_limits(y = 0) +
+      theme_minimal(base_size = 13)
   })
 }

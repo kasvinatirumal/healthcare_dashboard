@@ -12,8 +12,8 @@ sidebar <- dashboardSidebar(
   sidebarMenu(
     id = "sidebarItemSelected",
     
-    # Tab 1: Global Cancer Mortality Trends
-    menuItem("Global Cancer Mortality Trends", 
+    # Tab 1: Global Cancer Mortality
+    menuItem("Global Cancer Mortality", 
              tabName = "mortality", 
              icon = icon("globe")),
     
@@ -52,8 +52,7 @@ sidebar <- dashboardSidebar(
                 selected = "World"),
     
     selectInput("cancer", "Select Cancer Type",   
-                choices = c("All", "Breast", "Lung", "Prostate", "Colon", "
-                            Pancreas"),
+                choices = c("All", "Breast", "Lung", "Prostate", "Colon", "Pancreas"),
                 selected = "All"),
     
     uiOutput("yearSelectorUI")
@@ -101,6 +100,10 @@ body <- dashboardBody(
     
     # ---- Tab 1: Global Cancer Mortality ----
     tabItem(tabName = "mortality",
+            div(
+              h4("Global cancer mortality patterns by type, region, and age group, and how they change over time"),
+              style = "text-align: center; margin-bottom: 15px;"
+            ),
             fluidRow(
               # Info Box 1
               infoBoxOutput(width = 3, "infoYears"),
@@ -123,7 +126,7 @@ body <- dashboardBody(
                                           style = "font-size:14.5px;"), width = 12,
                          plotOutput("cancerTypePlot", height = "300px"))
               ),
-              # Plot 2 (Second row, Second col)
+              # Plot 2 (First row, Second col)
               column(width = 6,
                      box(title = tags$div(textOutput("title2"),
                                           style = "font-size:14.5px;"), width = 12,
@@ -152,7 +155,8 @@ body <- dashboardBody(
             fluidRow(
               # Plot 5 (Spans entire third row)
               column(width = 12,
-                     box(title = textOutput("title5"), width = 12,
+                     box(title = tags$div(textOutput("title5"),
+                                          style = "font-size:14.5px;"), width = 12,
                          leafletOutput("mapPlot", height = "425px"))
               )
             )

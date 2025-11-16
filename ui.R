@@ -28,7 +28,7 @@ sidebar <- dashboardSidebar(
     # Tab 3: Additional tab
     menuItem("Obesity Risk Factors", 
              tabName = "obesity", 
-             icon = icon("flask")),
+             icon = icon("running")),
     
     # Tab 4: Additional tab
     menuItem("Tab 4", 

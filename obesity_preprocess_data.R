@@ -9,21 +9,37 @@ obesity_risk <- obesity_risk_raw[
 ]
 
 # renaming for shorter labels 
-obesity_risk <- obesity_risk %>%
-  mutate(
-    ShortQuestion = dplyr::case_when(
-      Question == "Percent of adults aged 18 years and older who have obesity" ~ "Adults with Obesity",
-      Question == "Percent of adults aged 18 years and older who have an overweight classification" ~ "Adults Overweight",
-      Question == "Percent of adults who achieve at least 150 minutes a week of moderate-intensity aerobic physical activity or 75 minutes a week of vigorous-intensity aerobic activity (or an equivalent combination)" ~ "150+ min Activity",
-      Question == "Percent of adults who achieve at least 150 minutes a week of moderate-intensity aerobic physical activity or 75 minutes a week of vigorous-intensity aerobic physical activity (or an equivalent combination) and engage in muscle-strengthening activities on 2 or more days a week" ~ "Activity + Strengthening",
-      Question == "Percent of adults who achieve more than 300 minutes a week of moderate-intensity aerobic physical activity or 150 minutes a week of vigorous-intensity aerobic activity (or an equivalent combination)" ~ ">300 min Activity",
-      Question == "Percent of adults who engage in muscle-strengthening activities on 2 or more days a week" ~ "Strengthening 2+ Days",
-      Question == "Percent of adults who engage in no leisure-time physical activity" ~ "No Physical Activity",
-      Question == "Percent of adults who report consuming fruit less than one time daily" ~ "Low Fruit Intake",
-      Question == "Percent of adults who report consuming vegetables less than one time daily" ~ "Low Vegetable Intake",
-      TRUE ~ Question
-    )
-  )
+long_questions <- c(
+  "Percent of adults aged 18 years and older who have obesity",
+  "Percent of adults aged 18 years and older who have an overweight classification",
+  "Percent of adults who achieve at least 150 minutes a week of moderate-intensity aerobic physical activity or 75 minutes a week of vigorous-intensity aerobic activity (or an equivalent combination)",
+  "Percent of adults who achieve at least 150 minutes a week of moderate-intensity aerobic physical activity or 75 minutes a week of vigorous-intensity aerobic physical activity (or an equivalent combination) and engage in muscle-strengthening activities on 2 or more days a week",
+  "Percent of adults who achieve more than 300 minutes a week of moderate-intensity aerobic physical activity or 150 minutes a week of vigorous-intensity aerobic activity (or an equivalent combination)",
+  "Percent of adults who engage in muscle-strengthening activities on 2 or more days a week",
+  "Percent of adults who engage in no leisure-time physical activity",
+  "Percent of adults who report consuming fruit less than one time daily",
+  "Percent of adults who report consuming vegetables less than one time daily"
+)
+
+short_labels <- c(
+  "Adults with Obesity",
+  "Adults Overweight",
+  "150+ min Activity",
+  "Activity + Strengthening",
+  ">300 min Activity",
+  "Strengthening 2+ Days",
+  "No Physical Activity",
+  "Low Fruit Intake",
+  "Low Vegetable Intake"
+)
+
+m <- match(obesity_risk$Question, long_questions)
+
+obesity_risk$ShortQuestion <- ifelse(
+  is.na(m),
+  obesity_risk$Question,
+  short_labels[m]
+)
 
 options(tigris_use_cache = TRUE, tigris_class = "sf")
 states_sf <- tigris::states(cb = TRUE, year = 2023)

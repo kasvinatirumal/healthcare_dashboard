@@ -31,9 +31,9 @@ sidebar <- dashboardSidebar(
              icon = icon("running")),
     
     # Tab 4: Additional tab
-    menuItem("Tab 4", 
-             tabName = "tab4", 
-             icon = icon("search"))
+    menuItem("Mental Heatlh Care", 
+             tabName = "mental", 
+             icon = icon("brain"))
   ),
   
   # ---- Tab 1: Global Cancer Mortality ----
@@ -141,6 +141,23 @@ sidebar <- dashboardSidebar(
         "Strengthening 2+ Days",
         "No Physical Activity"
       )
+    )
+  ),
+  conditionalPanel(
+    condition = "input.sidebarItemSelected == 'mental'",
+    
+    selectInput(
+      inputId = "indicator",
+      label = "Select Indicator",
+      choices = NULL,   # populated in server
+      selected = NULL
+    ),
+    
+    selectInput(
+      inputId = "end_date",
+      label = "Select Time Period End Date",
+      choices = NULL,   # populated in server
+      selected = NULL
     )
   )
 )
@@ -289,9 +306,55 @@ body <- dashboardBody(
             )
     ),
     
-    # Tab 4
-    tabItem(tabName = "tab4",
-            h3("Project 4")
+    tabItem(
+      tabName = "mental",
+      
+      # Row 1: Map
+      fluidRow(
+        column(
+          width = 12,
+          box(
+            title = tags$div(
+              "Mental Health Care in the Last 4 Weeks by State",
+              style = "font-size:16px; font-weight:bold;"
+            ),
+            width = 12,
+            status = "primary",
+            solidHeader = TRUE,
+            plotOutput("mh_map", height = "350px")
+          )
+        )
+      ),
+      
+      # Row 2: Bar charts (Sex and Race/Ethnicity, United States)
+      fluidRow(
+        column(
+          width = 6,
+          box(
+            title = tags$div(
+              "Differences by Sex (United States)",
+              style = "font-size:14px; font-weight:bold; white-space:normal;"
+            ),
+            width = 12,
+            status = "primary",
+            solidHeader = TRUE,
+            plotOutput("mh_sex_bar", height = "300px")
+          )
+        ),
+        column(
+          width = 6,
+          box(
+            title = tags$div(
+              "Differences by Race/Ethnicity (United States)",
+              style = "font-size:14px; font-weight:bold; white-space:normal;"
+            ),
+            width = 12,
+            status = "primary",
+            solidHeader = TRUE,
+            plotOutput("mh_race_bar", height = "300px")
+          )
+        )
+      )
     )
   )
 )

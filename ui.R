@@ -169,9 +169,24 @@ body <- dashboardBody(
     # ---- Tab 2: Heart Disease Indicators ----
     tabItem(tabName = "heart",
             div(
-              h4("I am evaluating how demographic factors as well as lifestyle choices correlate with heart disease risk."),
-              style = "text-align: center; margin-bottom: 20px;"
-            ),
+              style = "text-align: center; margin-bottom: 25px;",
+              HTML("
+                <h4 style='font-size: 20px; margin-bottom: 10px;'>
+                  <strong>I am evaluating how demographic factors as well as lifestyle choices correlate with heart disease risk.</strong>
+                </h4>
+            
+                <ul style='display: inline-block; text-align: left; font-size: 15px; line-height: 1.5; margin-top: 5px;'>
+                  <li>
+                    A <strong><u><em>smoker</em></u> </strong> is classified as someone who smoked at least 100 cigarettes in their lifetime 
+                    <strong>and</strong> currently smokes either every day or some days
+                  </li>
+                  <br>
+                  <li>
+                    A  <strong><u><em>drinker</em></u></strong> is classified as someone who reportedly has more than 7 drinks per week
+                  </li>
+                </ul>
+                ")
+              ),
             
             fluidRow(
               # Plot 1 (First row, First col)

@@ -116,19 +116,19 @@ server <- function(input, output) {
   
   # Produce the first reactive title 
   output$title1 <- renderText({
-    paste0("Average Cancer Mortality Rate by Cancer Type (", input$region, ", ", 
+    paste0("Mortality Rate by Cancer Type (", input$region, ", ", 
            input$year[1], "-", input$year[2],")")
   })
   
   # Produce the second reactive title
   output$title2 <- renderText({
-    paste0("Regional Trends in Cancer Mortality Rate (", input$cancer, " Cancer, ",
+    paste0("Regional Trends in Mortality Rate (", input$cancer, " Cancer, ",
            input$year[1], "-", input$year[2],")")
   })
   
   # Produce the third reactive title
   output$title3 <- renderText({
-    paste0("Average Mortality Rate by Age Group (", input$region, ", ", input$cancer,
+    paste0("Mortality Rate by Age Group (", input$region, ", ", input$cancer,
            " Cancer, ", input$yearSelector, ")")
   })
   
@@ -279,7 +279,7 @@ server <- function(input, output) {
                 size = 4) +
       labs(
         x = "Age group",
-        y = "Death rate per 100,000 population"
+        y = "Average Death rate (per 100,000 population)"
       ) +
       theme_minimal() +
       theme(axis.text.x = element_text(size=10, angle = 45, hjust = 1)) +
@@ -347,7 +347,7 @@ server <- function(input, output) {
       scale_fill_manual(values = continent_colors) +
       labs(
         y = paste(
-          "Change in Death Rate (per 100,000 population)"
+          "Change in Average Death Rate (per 100,000 population)"
         ),
         fill = "Region"
       ) +
@@ -390,9 +390,9 @@ server <- function(input, output) {
         lat = ~ latitude,
         weight = 1,
         radius = ~ abs(change) * 75000,
-        color = ~ifelse(change > 0, "red", "green"),   
+        color = "white",   
         fillColor = ~ifelse(change > 0, "red", "green"),  
-        fillOpacity = 0.4,
+        fillOpacity = 0.5,
         popup = ~ paste(
           country,
           "<br>Change:",

@@ -6,7 +6,23 @@
 <h3> Looking more closely, here are the guiding questions for each section </h3>
 
 <h2> 1.&nbsp; Global Cancer Mortality </h2>
+  **The questions I want to answer are:**
+  For the period 2003 - 2015, the dashboard focuses on:
+  - How did cancer mortality rates change over time by cancer type and region?
+  - How did mortality rates vary by cancer type and age group within a given year?
+  - Which countries experienced the smallest and largest changes in mortality rates, by region and cancer type?
 
+  **Dataset**
+  - Sourced from the WHO Mortality Database, with separate datasets downloaded for five cancer types:
+      - Colon cancer: https://platform.who.int/mortality/themes/theme-details/topics/indicator-groups/indicator-group-details/MDB/colon-and-rectum-cancers
+      - Pancreas cancer: https://platform.who.int/mortality/themes/theme-details/topics/indicator-groups/indicator-group-details/MDB/pancreas-cancer
+      - Lung cancer: https://platform.who.int/mortality/themes/theme-details/topics/indicator-groups/indicator-group-details/MDB/trachea-bronchus-lung-cancers
+      - Breast cancer: https://platform.who.int/mortality/themes/theme-details/topics/indicator-groups/indicator-group-details/MDB/breast-cancer
+      - Prostate cancer: https://platform.who.int/mortality/themes/theme-details/topics/indicator-groups/indicator-group-details/MDB/prostate-cancer
+  - Each dataset contains 12 variables for each observation, including but not limited to region, country, year, gender, age group, number of cases, and mortality rate per 100,000 population.
+  - The five datasets were transformed and cleaned into `cancer_all_df.Rdata` using the script `cancer_preprocess_data.R`.
+  - The dataset `cancer_all_df.Rdata` was used for all the visualizations within Tab 1 of the dashbaord.
+    
 <h2> 2.&nbsp; Heart Disease (Arnav) </h2>
 
   **The questions I want to answer are:**

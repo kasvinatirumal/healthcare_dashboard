@@ -10,7 +10,7 @@
   **The questions I want to answer are:**
   - How did mortality rates change between 2003 and 2015 by cancer type and region?
   - How are mortality rates distributed across age groups by cancer type in a given year?
-  - Which countries experienced the smallest and largest changes in mortality rates from 2002 to 2015, by region and cancer type?
+  - Which countries experienced the smallest and largest changes in mortality rates from 2003 to 2015, by region and cancer type?
 
   **Dataset**
   - Sourced from the WHO Mortality Database, with separate datasets downloaded for five cancer types. The links to each dataset are as follows: [Colon Cancer](https://platform.who.int/mortality/themes/theme-details/topics/indicator-groups/indicator-group-details/MDB/colon-and-rectum-cancers), [Pancreas Cancer](https://platform.who.int/mortality/themes/theme-details/topics/indicator-groups/indicator-group-details/MDB/pancreas-cancer), [Lung Cancer](https://platform.who.int/mortality/themes/theme-details/topics/indicator-groups/indicator-group-details/MDB/trachea-bronchus-lung-cancers), [Breast Cancer](https://platform.who.int/mortality/themes/theme-details/topics/indicator-groups/indicator-group-details/MDB/breast-cancer), [Prostate Cancer](https://platform.who.int/mortality/themes/theme-details/topics/indicator-groups/indicator-group-details/MDB/prostate-cancer)

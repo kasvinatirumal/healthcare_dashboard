@@ -13,12 +13,8 @@
   - Which countries experienced the smallest and largest changes in mortality rates, by region and cancer type?
 
   **Dataset**
-  - Sourced from the WHO Mortality Database, with separate datasets downloaded for five cancer types:
-      - Colon cancer: https://platform.who.int/mortality/themes/theme-details/topics/indicator-groups/indicator-group-details/MDB/colon-and-rectum-cancers
-      - Pancreas cancer: https://platform.who.int/mortality/themes/theme-details/topics/indicator-groups/indicator-group-details/MDB/pancreas-cancer
-      - Lung cancer: https://platform.who.int/mortality/themes/theme-details/topics/indicator-groups/indicator-group-details/MDB/trachea-bronchus-lung-cancers
-      - Breast cancer: https://platform.who.int/mortality/themes/theme-details/topics/indicator-groups/indicator-group-details/MDB/breast-cancer
-      - Prostate cancer: https://platform.who.int/mortality/themes/theme-details/topics/indicator-groups/indicator-group-details/MDB/prostate-cancer
+  - Sourced from the WHO Mortality Database, with separate datasets downloaded for five cancer types.
+  - The links for each dataset are as follows: [Colon Cancer]([https://www.kaggle.com/datasets/kamilpytlak/personal-key-indicators-of-heart-disease](https://platform.who.int/mortality/themes/theme-details/topics/indicator-groups/indicator-group-details/MDB/colon-and-rectum-cancers)), [Pancrease Cancer]([https://www.kaggle.com/datasets/kamilpytlak/personal-key-indicators-of-heart-disease](https://platform.who.int/mortality/themes/theme-details/topics/indicator-groups/indicator-group-details/MDB/pancreas-cancer)), [Lung Cancer]([https://www.kaggle.com/datasets/kamilpytlak/personal-key-indicators-of-heart-disease](https://platform.who.int/mortality/themes/theme-details/topics/indicator-groups/indicator-group-details/MDB/trachea-bronchus-lung-cancers)), [Breast Cancer]([https://www.kaggle.com/datasets/kamilpytlak/personal-key-indicators-of-heart-disease](https://platform.who.int/mortality/themes/theme-details/topics/indicator-groups/indicator-group-details/MDB/breast-cancer)), [Prostate Cancer]([https://www.kaggle.com/datasets/kamilpytlak/personal-key-indicators-of-heart-disease](https://platform.who.int/mortality/themes/theme-details/topics/indicator-groups/indicator-group-details/MDB/prostate-cancer))
   - Each dataset contains 12 variables for each observation, including but not limited to region, country, year, gender, age group, number of cases, and mortality rate per 100,000 population.
   - The five datasets were transformed and cleaned into `cancer_all_df.Rdata` using the script `cancer_preprocess_data.R`.
   - The dataset `cancer_all_df.Rdata` was used for all the visualizations within Tab 1 of the dashbaord.

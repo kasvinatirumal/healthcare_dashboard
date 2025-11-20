@@ -6,8 +6,10 @@
 <h3> Looking more closely, here are the guiding questions for each section </h3>
 
 <h2> 1.&nbsp; Global Cancer Mortality </h2>
+
   **The questions I want to answer are:**
-  For the period 2003 - 2015, the dashboard focuses on:
+  
+  For the period 2003 - 2015, the dashboard focuses on:  
   - How did cancer mortality rates change over time by cancer type and region?
   - How did mortality rates vary by cancer type and age group within a given year?
   - Which countries experienced the smallest and largest changes in mortality rates, by region and cancer type?

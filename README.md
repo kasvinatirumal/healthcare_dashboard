@@ -17,7 +17,7 @@
   - To download any of the five datasets directly from the WHO website, open the corresponding link, click “Export Data”, select “Full Data”, then hit the "Export" button. Alternatively, all five datasets are included in the repository under `cancer_datasets.zip`.
   - Each dataset contains 12 variables per observation, including (but not limited to) region, country, year, gender, age group, number of cases, and mortality rate per 100,000 population.
   - All five datasets were cleaned and merged into `cancer_all_df.Rdata` using the script `cancer_preprocess_data.R`.
-  - The resulting cancer_all_df.Rdata file is used for all visualizations in Tab 1 of the dashboard.
+  - The resulting cancer_all_df.Rdata file is used for all visualizations within the "Global Cancer Mortality" Tab.
     
 <h2> 2.&nbsp; Heart Disease (Arnav) </h2>
 

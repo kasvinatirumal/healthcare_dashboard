@@ -9,7 +9,7 @@
 
   **The questions I want to answer are:**
   
-  For the period 2003 - 2015:
+  For the period 2003 - 2015
   - How did cancer mortality rates change over time by cancer type and region?
   - How did mortality rates vary by cancer type and age group within a given year?
   - Which countries experienced the smallest and largest changes in mortality rates, by region and cancer type?

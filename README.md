@@ -1,7 +1,7 @@
 <h1> Our Group Decided to Focus on Healthcare </h1>
 
 - We are approaching healthcare through different lenses
-- The dashboard shows cancer mortality rates, heart disease, obesity, and mental health data
+- The dashboard shows cancer mortality rates, heart disease, obesity, and mental health
 
 <h3> Looking more closely, here are the guiding questions for each section </h3>
 

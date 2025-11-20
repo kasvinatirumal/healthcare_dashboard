@@ -16,7 +16,7 @@
 
   **Dataset**
   - Sourced from the WHO Mortality Database, with separate datasets downloaded for five cancer types. The links to each dataset are as follows: [Colon Cancer](https://platform.who.int/mortality/themes/theme-details/topics/indicator-groups/indicator-group-details/MDB/colon-and-rectum-cancers), [Pancreas Cancer](https://platform.who.int/mortality/themes/theme-details/topics/indicator-groups/indicator-group-details/MDB/pancreas-cancer), [Lung Cancer](https://platform.who.int/mortality/themes/theme-details/topics/indicator-groups/indicator-group-details/MDB/trachea-bronchus-lung-cancers), [Breast Cancer](https://platform.who.int/mortality/themes/theme-details/topics/indicator-groups/indicator-group-details/MDB/breast-cancer), [Prostate Cancer](https://platform.who.int/mortality/themes/theme-details/topics/indicator-groups/indicator-group-details/MDB/prostate-cancer)
-  - To download any of the five datasets directly from the WHO website, open the corresponding link, click “Export Data”, select “Full Data”, then hit the export button. 
+  - To download any of the five datasets directly from the WHO website, open the corresponding link, click “Export Data”, select “Full Data”, then hit the "Export" button. 
   - Alternatively, all five datasets are included in the repository under `cancer_datasets.zip`.
   - Each dataset contains 12 variables per observation, including (but not limited to) region, country, year, gender, age group, number of cases, and mortality rate per 100,000 population.
   - All five datasets were cleaned and merged into `cancer_all_df.Rdata` using the script `cancer_preprocess_data.R`.

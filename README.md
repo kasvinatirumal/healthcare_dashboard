@@ -59,6 +59,7 @@
   - Specific:
     - Do specific demographics (region, sex, or race/ethnicity) lack mental health treament when needed?
     - Do people receive prescription mediaction for mental health more or less than therapy or counseling?
+   
   **Dataset**
   - The dataset used is from the U.S. Department of Health & Human Services
   - The dataset is an aggregated dataset broken down by several factors with the percentage value of the selected population that qualifies for that indicator.

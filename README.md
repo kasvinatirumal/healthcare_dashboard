@@ -51,4 +51,16 @@
   - Download the datasets as CSV files and rename to the link names
 
 
-<h2> 4.&nbsp; Mental Health </h2>
+<h2> 4.&nbsp; Mental Health (Maxx) </h2>
+
+  **The questions I want to answer are:**
+  - Broad:
+    - How do different demographics experience mental health care differently?
+  - Specific:
+    - 
+  **Dataset**
+  - The dataset used is from the U.S. Department of Health & Human Services
+  - The dataset is an aggregated dataset broken down by several factors with the percentage value of the selected population that qualifies for that indicator.
+    - Contains by age, sex, race/ethnicity, and state.
+  - The dataset tracks whether an individual has received treatment for mental health.
+    - Broken down by prescription medication and counseling/therapy.

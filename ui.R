@@ -147,6 +147,13 @@ sidebar <- dashboardSidebar(
     condition = "input.sidebarItemSelected == 'mental'",
     
     selectInput(
+      inputId = "end_date",
+      label = "Select Time Period End Date",
+      choices = NULL,   # populated in server
+      selected = NULL
+    ),
+    
+    selectInput(
       inputId = "indicator",
       label = "Select Indicator",
       choices = NULL,   # populated in server
@@ -154,8 +161,8 @@ sidebar <- dashboardSidebar(
     ),
     
     selectInput(
-      inputId = "end_date",
-      label = "Select Time Period End Date",
+      inputId = "indicator2",
+      label = "Select Second Indicator",
       choices = NULL,   # populated in server
       selected = NULL
     )
@@ -323,8 +330,14 @@ body <- dashboardBody(
     
     tabItem(
       tabName = "mental",
+      fluidRow(
+        column(
+          width = 12,
+          tags$hr(style = "border-top: 2px solid #ccc; margin-top: 20px; margin-bottom: 10px;"),
+          tags$h3("Single Indicator:", style = "font-weight: bold; margin-left: 5px;")
+        )
+      ),
       
-      # Row 1: Map
       fluidRow(
         column(
           width = 12,
@@ -341,7 +354,23 @@ body <- dashboardBody(
         )
       ),
       
-      # Row 2: Bar charts (Sex and Race/Ethnicity, United States)
+      fluidRow(
+        column(
+          width = 12,
+          box(
+            title = tags$div(
+              "Indicator Trend Over Time (United States)",
+              style = "font-size:15px; font-weight:bold;"
+            ),
+            width = 12,
+            status = "primary",
+            solidHeader = TRUE,
+            plotOutput("mh_indicator_trend", height = "350px")
+          )
+        )
+      ),
+      
+      
       fluidRow(
         column(
           width = 6,
@@ -369,7 +398,62 @@ body <- dashboardBody(
             plotOutput("mh_race_bar", height = "300px")
           )
         )
+      ),
+      
+      fluidRow(
+        column(
+          width = 12,
+          tags$hr(style = "border-top: 2px solid #ccc; margin-top: 20px; margin-bottom: 10px;"),
+          tags$h3("Comparison with Second Indicator:", style = "font-weight: bold; margin-left: 5px;")
+        )
+      ),
+      
+      fluidRow(
+        column(
+          width = 12,
+          box(
+            title = tags$div(
+              "Indicator Trend Comparison Over Time (United States)",
+              style = "font-size:15px; font-weight:bold;"
+            ),
+            width = 12,
+            status = "primary",
+            solidHeader = TRUE,
+            plotOutput("mh_indicator_trend_compare", height = "350px")
+          )
+        )
+      ),
+      
+      fluidRow(
+        column(
+          width = 6,
+          box(
+            title = tags$div(
+              "Differences by Sex – Comparison of Indicators (United States)",
+              style = "font-size:14px; font-weight:bold; white-space:normal;"
+            ),
+            width = 12,
+            status = "primary",
+            solidHeader = TRUE,
+            plotOutput("mh_sex_compare", height = "320px")
+          )
+        ),
+        column(
+          width = 6,
+          box(
+            title = tags$div(
+              "Differences by Race/Ethnicity – Comparison of Indicators (United States)",
+              style = "font-size:14px; font-weight:bold; white-space:normal;"
+            ),
+            width = 12,
+            status = "primary",
+            solidHeader = TRUE,
+            plotOutput("mh_race_compare", height = "320px")
+          )
+        )
       )
+      
+      
     )
   )
 )

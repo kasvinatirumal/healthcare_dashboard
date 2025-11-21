@@ -775,6 +775,16 @@ server <- function(input, output, session) {
       selected = if (length(inds) > 0) inds[1] else NULL
     )
   })
+  observe({
+    inds <- sort(unique(states_base$Indicator))
+    
+    updateSelectInput(
+      session,
+      "indicator2",
+      choices  = inds,
+      selected = if (length(inds) > 0) inds[1] else NULL
+    )
+  })
   
   # ---- Populate end_date dropdown from data ----
   observe({
@@ -822,7 +832,7 @@ server <- function(input, output, session) {
         na.value = "grey90"
       ) +
       labs(
-        fill  = "Decimal Percent",
+        fill  = "Portion of Population",
         title = wrapped_title
       ) +
       theme_void()
@@ -900,4 +910,176 @@ server <- function(input, output, session) {
         axis.text.y = element_text(size = 10)
       )
   })
+  
+  # --- By Sex: comparison of first and second indicator ---
+  us_by_sex_compare <- reactive({
+    req(input$indicator, input$indicator2, selected_date())
+    
+    data %>%
+      filter(
+        State   == "United States",
+        Group   == "By Sex",
+        TimeEnd == selected_date(),
+        Indicator %in% c(input$indicator, input$indicator2)
+      ) %>%
+      group_by(Indicator, Subgroup) %>%
+      summarise(
+        Value = mean(Value, na.rm = TRUE),
+        .groups = "drop"
+      )
+  })
+  
+  output$mh_sex_compare <- renderPlot({
+    df <- us_by_sex_compare()
+    
+    validate(
+      need(nrow(df) > 0, "No data available for these indicators (By Sex).")
+    )
+    
+    ggplot(df, aes(x = Subgroup, y = Value, fill = Indicator)) +
+      geom_col(position = "dodge") +
+      scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+      labs(
+        x = NULL,
+        y = "Percent",
+        fill = "Indicator"
+      ) +
+      guides(fill = guide_legend(ncol = 1)) +   # 1 column = vertical stack
+      theme_minimal(base_size = 12) +
+      theme(
+        legend.position = "bottom",             # put legend below plot
+        legend.justification = "left",          # left-align inside that area
+        legend.direction = "vertical",
+        legend.box = "vertical",
+        plot.margin = margin(t = 5, r = 10, b = 35, l = 10)
+      )
+  })
+  
+  
+  
+  # --- By Race/Ethnicity: comparison of first and second indicator ---
+  us_by_race_compare <- reactive({
+    req(input$indicator, input$indicator2, selected_date())
+    
+    data %>%
+      filter(
+        State   == "United States",
+        Group   == "By Race/Hispanic ethnicity",
+        TimeEnd == selected_date(),
+        Indicator %in% c(input$indicator, input$indicator2)
+      ) %>%
+      group_by(Indicator, Subgroup) %>%
+      summarise(
+        Value = mean(Value, na.rm = TRUE),
+        .groups = "drop"
+      ) %>%
+      tidyr::drop_na(Value)
+  })
+  
+  output$mh_race_compare <- renderPlot({
+    df <- us_by_race_compare()
+    
+    validate(
+      need(nrow(df) > 0, "No data available for these indicators (By Race/Ethnicity).")
+    )
+    
+    ggplot(df, aes(x = reorder(Subgroup, Value), y = Value, fill = Indicator)) +
+      geom_col(position = "dodge") +
+      scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+      labs(
+        x  = NULL,
+        y  = "Percent",
+        fill = "Indicator"
+      ) +
+      coord_flip() +
+      guides(fill = guide_legend(ncol = 1)) +
+      theme_minimal(base_size = 12) +
+      theme(
+        legend.position = "bottom",
+        legend.justification = "left",
+        legend.direction = "vertical",
+        legend.box = "vertical",
+        plot.margin = margin(t = 5, r = 10, b = 35, l = 0),
+        axis.text.y = element_text(size = 10)
+      )
+  })
+  # ---- Time series for first indicator (ignores date filter) ----
+  indicator_timeseries <- reactive({
+    req(input$indicator)
+    
+    data %>%
+      dplyr::filter(
+        State == "United States",
+        Group == "National Estimate",
+        Indicator == input$indicator
+      ) %>%
+      dplyr::mutate(TimeEnd = as.Date(`Time Period End Date`, format = "%m/%d/%Y")) %>%
+      dplyr::arrange(TimeEnd) %>%
+      dplyr::filter(!is.na(Value))
+  })
+  
+  output$mh_indicator_trend <- renderPlot({
+    df <- indicator_timeseries()
+    
+    validate(
+      need(nrow(df) > 0, "No historical data available for this indicator.")
+    )
+    
+    ggplot(df, aes(x = TimeEnd, y = Value)) +
+      geom_line(color = "#0073C2FF", size = 1.2, na.rm = TRUE) +
+      geom_point(color = "#0073C2FF", size = 2, na.rm = TRUE) +
+      scale_y_continuous(labels = scales::percent_format(accuracy = 1), limits = c(0, NA)) +
+      labs(
+        title = paste("Historical Trend for:", input$indicator),
+        x = "Date",
+        y = "Percent"
+      ) +
+      theme_minimal(base_size = 13)
+  })
+  
+  # ---- Time series for BOTH indicators (United States, National Estimate) ----
+  indicator_timeseries_both <- reactive({
+    req(input$indicator, input$indicator2)
+    
+    data %>%
+      dplyr::filter(
+        State == "United States",
+        Group == "National Estimate",
+        Indicator %in% c(input$indicator, input$indicator2)
+      ) %>%
+      dplyr::arrange(TimeEnd) %>%
+      dplyr::filter(!is.na(Value))
+  })
+  
+  output$mh_indicator_trend_compare <- renderPlot({
+    df <- indicator_timeseries_both()
+    
+    validate(
+      need(nrow(df) > 0, "No historical data available for these indicators.")
+    )
+    
+    ggplot(df, aes(x = TimeEnd, y = Value, color = Indicator)) +
+      geom_line(size = 1.2, na.rm = TRUE) +
+      geom_point(size = 2, na.rm = TRUE) +
+      scale_y_continuous(
+        labels = scales::percent_format(accuracy = 1),
+        limits = c(0, NA)
+      ) +
+      labs(
+        title = "Historical Trend Comparison for Selected Indicators",
+        x = "Date",
+        y = "Percent",
+        color = "Indicator"
+      ) +
+      theme_minimal(base_size = 13) +
+      theme(
+        legend.position = "bottom",
+        legend.direction = "vertical",
+        legend.box = "vertical"
+      )
+  })
+  
+  
+  
+  
 }

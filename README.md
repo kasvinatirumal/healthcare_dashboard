@@ -34,6 +34,20 @@
   - The original data can be found on the [CDC website](https://www.cdc.gov/brfss/annual_data/annual_2022.html)
   - It contains 18 variables (columns) for each observation (interviewee), ranging from if they have heart disease to more descriptive characteristics such as if they drink alcohol, physical activity rate, mental health, as well as general health
 
-<h2> 3.&nbsp; Obesity </h2>
+<h2> 3.&nbsp; Obesity (Nicole) </h2>
+  **The questions I want to answer are:**
+  - How do obesity and health behavior rates differ across U.S. states?
+  - What patterns emerge in obesity rates across the United States?
+  - How have these behaviors changed over the last decade, and how do they relate to obesity levels?
+ 
+  **Dataset**:
+  - Both datasets used in the application comes from the CDC Behavioral Risk Factor Surveillance System. 
+  - There are two datasets used:
+  - One dataset maps out geographical obesity rates by state in 2015 [(NationalObesity)](https://catalog.data.gov/dataset/national-obesity-by-state-d765a)
+    - It's mainly used to show a map of the states and their obesity rates in relation to the rest of the states
+  - The other tracks adults and their physical activities by state through a period of time [(BehavioralRiskForObesity)](https://catalog.data.gov/dataset/nutrition-physical-activity-and-obesity-behavioral-risk-factor-surveillance-system/resource/0280bb9c-4de8-4b95-9642-93f727c4d305)
+    - This is used to compare states throughout the years, and reports on various activities that people have done (2012-2023)
+  - Download the datasets as CSV files and rename to the link names
+
 
 <h2> 4.&nbsp; Mental Health </h2>

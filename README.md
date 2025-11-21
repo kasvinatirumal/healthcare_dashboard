@@ -35,6 +35,7 @@
   - It contains 18 variables (columns) for each observation (interviewee), ranging from if they have heart disease to more descriptive characteristics such as if they drink alcohol, physical activity rate, mental health, as well as general health
 
 <h2> 3.&nbsp; Obesity (Nicole) </h2>
+
   **The questions I want to answer are:**
   - How do obesity and health behavior rates differ across U.S. states?
   - What patterns emerge in obesity rates across the United States?

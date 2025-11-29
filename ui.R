@@ -96,7 +96,7 @@ sidebar <- dashboardSidebar(
     )
   ),
   
-  # ---- Tab 3: Obesity Risk Factors (state selectors) ----
+  # ---- Tab 3: Obesity Risk Factors ----
   conditionalPanel(
     condition = "input.sidebarItemSelected == 'obesity'",
     
@@ -141,8 +141,28 @@ sidebar <- dashboardSidebar(
         "Strengthening 2+ Days",
         "No Physical Activity"
       )
+    ),
+    
+    tags$div(
+      style = "padding: 10px 20px 10px 20px;",   # top, right, bottom, left
+      tags$hr(),
+      h4("General Insights"),
+      helpText(
+        "Across the United States, obesity rates tend to be highest in the Southeastern region,",
+        "which consistently appears in the darkest shades on the map. States in the West Coast,",
+        "Northeast, and Mountain West generally have lower obesity percentages."
+      ),
+      helpText(
+        "When comparing physical activity and obesity trends between selected states,",
+        "activity levels have generally increased over the past decade, including meeting",
+        "the 150-minute and 300-minute activity guidelines and strength training.",
+        "However, adult obesity rates have also continued to rise, suggesting that",
+        "increased activity alone may not offset other factors such as diet or environment."
+      )
     )
   ),
+  
+  # ---- Tab 4: Mental Health Care ----
   conditionalPanel(
     condition = "input.sidebarItemSelected == 'mental'",
     
